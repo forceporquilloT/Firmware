@@ -148,17 +148,15 @@ String get_ap_ssid() {
 }
 
 String get_ip() {
-  static String ip = "";
-  if(!ip.length()) {
-    IPAddress _ip = WiFi.localIP();
-    ip = _ip[0];
-    ip += ".";
-    ip += _ip[1];
-    ip += ".";
-    ip += _ip[2];
-    ip += ".";
-    ip += _ip[3];
-  }
+  String ip = "";
+  IPAddress _ip = WiFi.localIP();
+  ip = _ip[0];
+  ip += ".";
+  ip += _ip[1];
+  ip += ".";
+  ip += _ip[2];
+  ip += ".";
+  ip += _ip[3];
   return ip;
 }
 
