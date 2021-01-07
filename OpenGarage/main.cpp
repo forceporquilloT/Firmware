@@ -512,6 +512,15 @@ void on_sta_upload() {
   delay(0);    
 }
 
+void check_status_ap() {
+  static ulong cs_timeout = 0;
+  if(millis() > cs_timeout) {
+    DEBUG_PRINTLN(og.read_distance());
+    DEBUG_PRINTLN(OG_FWV);
+    cs_timeout = millis() + 2000;
+  }
+}
+
 void check_status() {
   static ulong checkstatus_timeout = 0;
   if(curr_utc_time > checkstatus_timeout) {
@@ -702,6 +711,10 @@ void do_loop() {
   if(og.state == OG_STATE_CONNECTED && curr_mode == OG_MOD_STA) {
     time_keeping();
     check_status();
+  }
+  
+  if(curr_mode == OG_MOD_AP) {
+    check_status_ap();
   }
   process_ui();
   if(og.alarm)
