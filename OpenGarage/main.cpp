@@ -394,6 +394,7 @@ void do_setup()
     delete server;
     server = NULL;
   }
+  WiFi.persistent(false); // turn off persistent, fixing flash crashing issue
   og.begin();
   og.options_setup();
   curr_cloud_access_en = og.get_cloud_access_en();
