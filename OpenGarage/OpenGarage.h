@@ -59,9 +59,9 @@ public:
   static bool get_local_access_en();
   static void set_led(byte status)   { digitalWrite(PIN_LED, status); }
   static void set_relay(byte status) { digitalWrite(PIN_RELAY, status); }
-  static void click_relay(uint ms=1000) {
+  static void click_relay() {
     digitalWrite(PIN_RELAY, HIGH);
-    delay(ms);
+    delay(options[OPTION_CDT].ival);
     digitalWrite(PIN_RELAY, LOW);
   }
   static int find_option(String name);

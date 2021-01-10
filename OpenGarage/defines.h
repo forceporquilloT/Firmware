@@ -24,7 +24,7 @@
 #define _DEFINES_H
 
 /** Firmware version, hardware version, and maximal values */
-#define OG_FWV    103   // Firmware version: 100 means 1.0.0
+#define OG_FWV    104   // Firmware version: 104 means 1.0.4
 
 /** GPIO pins */
 #define PIN_RELAY  15
@@ -90,6 +90,7 @@ typedef enum {
   OPTION_RIV,     // read interval
   OPTION_ALM,     // alarm mode
   OPTION_HTP,     // http port
+  OPTION_CDT,     // click delay time
   OPTION_MOD,     // mode
   OPTION_SSID,    // wifi ssid
   OPTION_PASS,    // wifi password

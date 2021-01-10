@@ -269,6 +269,11 @@ void on_sta_change_options() {
           server_send_result(HTML_DATA_OUTOFBOUND, key);
           return;
         }
+        if(i==OPTION_CDT && ival < 50) {
+          // click delay time should be at least 50 ms
+          server_send_result(HTML_DATA_OUTOFBOUND, key);
+          return;
+        }
       }
     }
   }

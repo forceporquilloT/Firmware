@@ -15,8 +15,9 @@ const char html_sta_options[] PROGMEM = R"(<body>
 <option value=0>Ceiling Mount</option>
 <option value=1>Side Mount</option>
 </select></td></tr> 
-<tr><td><b>Threshold (cm): </b></td><td><input type='text' size=4 maxlength=4 id='dth' data-mini='true' value=1></td></tr>
-<tr><td><b>Read Interval (s):</b></td><td><input type='text' size=3 maxlength=3 id='riv' data-mini='true' value=1></td></tr>
+<tr><td><b>Threshold (cm): </b></td><td><input type='text' size=4 maxlength=4 id='dth' data-mini='true' value=0></td></tr>
+<tr><td><b>Read Interval (s):</b></td><td><input type='text' size=3 maxlength=3 id='riv' data-mini='true' value=0></td></tr>
+<tr><td><b>Click Time (ms):</b></td><td><input type='text' size=5 maxlength=5 id='cdt' value=0 data-mini='true'></td></tr>
 <tr><td><b>Sound Alarm:</b></td><td>
 <select name='alm' id='alm' data-mini='true'>      
 <option value=0>Disabled</option>
@@ -24,7 +25,7 @@ const char html_sta_options[] PROGMEM = R"(<body>
 <option value=2>10 seconds</option>      
 </select></td></tr>
 <tr><td><b>Device Name:</b></td><td><input type='text' size=20 maxlength=32 id='name' data-mini='true' value='-'></td></tr>
-<tr><td><b>HTTP Port:</b></td><td><input type='text' size=5 maxlength=5 id='htp' value=1 data-mini='true'></td></tr>
+<tr><td><b>HTTP Port:</b></td><td><input type='text' size=5 maxlength=5 id='htp' value=0 data-mini='true'></td></tr>
 <tr><td><b>Device Key:</b></td><td><input type='password' size=24 maxlength=32 id='dkey' data-mini='true'></td></tr>
 <tr><td colspan=2><p id='msg'></p></td></tr>
 </table>
@@ -62,6 +63,7 @@ comm+='&dth='+$('#dth').val();
 comm+='&riv='+$('#riv').val();
 comm+='&alm='+$('#alm').val();
 comm+='&htp='+$('#htp').val();
+comm+='&cdt='+$('#cdt').val();
 comm+='&name='+encodeURIComponent($('#name').val());
 comm+='&auth='+encodeURIComponent($('#auth').val());
 if($('#cb_key').is(':checked')) {
@@ -77,7 +79,6 @@ if(jd.result==2) show_msg('Check device key and try again.');
 else show_msg('Error code: '+jd.result+', item: '+jd.item);
 } else {
 $('#msg').html('<font color=green>Options are successfully saved. Note that<br>changes to some options may require a reboot.</font>');
-$('#btn_submit').
 setTimeout(close, 4000);
 }
 });
@@ -92,6 +93,7 @@ $('#mnt').val(jd.mnt).selectmenu('refresh');
 $('#dth').val(jd.dth);
 $('#riv').val(jd.riv);
 $('#htp').val(jd.htp);
+$('#cdt').val(jd.cdt);
 $('#name').val(jd.name);
 $('#auth').val(jd.auth);
 });
