@@ -44,11 +44,14 @@ OptionStruct OpenGarage::options[] = {
   {"htp", 80,        65535, ""},
   {"cdt", 1000,       5000, ""},
   {"mod", OG_MOD_AP,   255, ""},
+  {"ati", 30,          720, ""},
+  {"ato", OG_AUTO_NONE,255, ""},
   {"ssid", 0, 0, ""},  // string options have 0 max value
   {"pass", 0, 0, ""},
   {"auth", 0, 0, ""},
   {"dkey", 0, 0, DEFAULT_DKEY},
-  {"name", 0, 0, DEFAULT_NAME}
+  {"name", 0, 0, DEFAULT_NAME},
+  {"iftt", 0, 0, ""}
 };
     
 void OpenGarage::begin() {
@@ -171,12 +174,15 @@ ulong OpenGarage::read_distance_once() {
   digitalWrite(PIN_TRIG, HIGH);
   delayMicroseconds(10);
   digitalWrite(PIN_TRIG, LOW);
+  // also clamp the result to maximum value 32767
   // wait till echo pin's rising edge
   while(digitalRead(PIN_ECHO)==LOW);
   unsigned long start_time = micros();
   // wait till echo pin's falling edge
   while(digitalRead(PIN_ECHO)==HIGH);
-  return micros() - start_time;  
+  ulong lapse = micros() - start_time;
+  if (lapse>32767L) lapse = 32767L;
+  return lapse;
 }
 
 uint OpenGarage::read_distance() {

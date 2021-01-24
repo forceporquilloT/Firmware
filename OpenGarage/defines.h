@@ -24,7 +24,7 @@
 #define _DEFINES_H
 
 /** Firmware version, hardware version, and maximal values */
-#define OG_FWV    104   // Firmware version: 104 means 1.0.4
+#define OG_FWV    105   // Firmware version: 105 means 1.0.5
 
 /** GPIO pins */
 #define PIN_RELAY  15
@@ -57,6 +57,10 @@
 
 #define OG_MOD_AP       0xA9
 #define OG_MOD_STA      0x2A
+
+#define OG_AUTO_NONE    0x00
+#define OG_AUTO_NOTIFY  0x01
+#define OG_AUTO_CLOSE   0x02
 
 #define OG_STATE_INITIAL        0
 #define OG_STATE_CONNECTING     1
@@ -92,11 +96,14 @@ typedef enum {
   OPTION_HTP,     // http port
   OPTION_CDT,     // click delay time
   OPTION_MOD,     // mode
+  OPTION_ATI,     // automation interval (in minutes)
+  OPTION_ATO,     // automation options 
   OPTION_SSID,    // wifi ssid
   OPTION_PASS,    // wifi password
   OPTION_AUTH,    // authentication token
   OPTION_DKEY,    // device key
   OPTION_NAME,    // device name
+  OPTION_IFTT,    // IFTTT token
   NUM_OPTIONS     // number of options
 } OG_OPTION_enum;
 

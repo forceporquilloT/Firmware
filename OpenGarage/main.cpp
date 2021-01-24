@@ -44,12 +44,13 @@ static bool curr_cloud_access_en = false;
 static bool curr_local_access_en = false;
 static uint led_blink_ms = LED_FAST_BLINK;
 static ulong restart_timeout = 0;
+static ulong justopen_timestamp = 0;
 static byte curr_mode;
 // this is one byte storing the door status histogram
 // maximum 8 bits
 static byte door_status_hist = 0;
 static ulong curr_utc_time = 0;
-
+static HTTPClient http;
 void do_setup();
 
 void server_send_html(String html) {
@@ -177,6 +178,8 @@ void on_sta_controller() {
   html += get_mac();
   html += F("\",\"cid\":");
   html += ESP.getChipId();
+  html += F(",\"rssi\":");
+  html += (int16_t)WiFi.RSSI();
   html += F("}");
   server_send_html(html);
 }
@@ -330,7 +333,7 @@ void on_sta_options() {
   OptionStruct *o = og.options;
   for(byte i=0;i<NUM_OPTIONS;i++,o++) {
     if(!o->max) {
-      if(i==OPTION_NAME || i==OPTION_AUTH) {  // only output selected string options
+      if(i==OPTION_NAME || i==OPTION_AUTH || i==OPTION_IFTT) {  // only output selected string options
         html += F("\"");
         html += o->name;
         html += F("\":");
@@ -527,6 +530,64 @@ void check_status_ap() {
   }
 }
 
+void perform_notify(String s) {
+  // Blynk notification
+  if(curr_cloud_access_en && Blynk.connected()) {
+    Blynk.notify(s);
+  }
+
+  // IFTTT notification
+  if(og.options[OPTION_IFTT].sval.length()>7) { // key size is at least 8
+    http.begin("http://maker.ifttt.com/trigger/opengarage/with/key/"+og.options[OPTION_IFTT].sval);
+    http.addHeader("Content-Type", "application/json");
+    http.POST("{\"value1\":\""+s+"\"}");
+    http.writeToStream(&Serial);
+    http.end();
+  }
+}
+
+void perform_automation(byte event) {
+  byte ato = og.options[OPTION_ATO].ival;
+  if(!ato) {
+    justopen_timestamp = 0;
+    return;
+  }
+  if(event == DOOR_STATUS_JUST_OPENED) {
+    justopen_timestamp = curr_utc_time; // record time stamp
+    perform_notify(og.options[OPTION_NAME].sval + " just OPENED!");
+  } else if (event == DOOR_STATUS_JUST_CLOSED) {
+    justopen_timestamp = 0; // reset time stamp
+    perform_notify(og.options[OPTION_NAME].sval + " just closed!");
+  } else if (event == DOOR_STATUS_REMAIN_OPEN) {
+    if (!justopen_timestamp) justopen_timestamp = curr_utc_time; // record time stamp
+    else {
+      if(curr_utc_time > justopen_timestamp + (ulong)og.options[OPTION_ATI].ival*60L) {
+        // reached timeout, perform action
+        if(ato & OG_AUTO_NOTIFY) {
+          // send notification
+          String s = og.options[OPTION_NAME].sval+" is left open for more than ";
+          s+= og.options[OPTION_ATI].ival;
+          s+= " minutes.";
+          if(ato & OG_AUTO_CLOSE) {
+            s+= " It will be auto-closed shortly";
+          } else {
+            s+= " This is a reminder for you.";
+          }
+          perform_notify(s);
+        }
+        if(ato & OG_AUTO_CLOSE) {
+          // auto close door
+          if(!og.options[OPTION_ALM].ival) { og.click_relay(); }
+          else { og.set_alarm(); }
+        }
+        justopen_timestamp = 0;
+      }
+    }
+  } else {
+    justopen_timestamp = 0;
+  }
+}
+
 void check_status() {
   static ulong checkstatus_timeout = 0;
   if(curr_utc_time > checkstatus_timeout) {
@@ -550,7 +611,8 @@ void check_status() {
       l.dist = distance;
       og.write_log(l);
     }
-    
+
+    // report status to Blynk
     if(curr_cloud_access_en && Blynk.connected()) {
       Blynk.virtualWrite(BLYNK_PIN_RCNT, read_cnt);
       Blynk.virtualWrite(BLYNK_PIN_DIST, distance);
@@ -560,12 +622,10 @@ void check_status() {
       str += og.options[OPTION_HTP].ival;
       str += " " + get_ap_ssid();
       blynk_lcd.print(0, 1, str);
-      if(event == DOOR_STATUS_JUST_OPENED) {
-        Blynk.notify(og.options[OPTION_NAME].sval + " just OPENED!");
-      } else if(event == DOOR_STATUS_JUST_CLOSED) {
-        Blynk.notify(og.options[OPTION_NAME].sval + " just closed!");
-      }
     }
+
+    perform_automation(event);
+
     checkstatus_timeout = curr_utc_time + og.options[OPTION_RIV].ival;
   }
 }

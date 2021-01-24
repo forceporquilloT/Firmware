@@ -26,7 +26,13 @@ const char html_sta_options[] PROGMEM = R"(<body>
 </select></td></tr>
 <tr><td><b>Device Name:</b></td><td><input type='text' size=20 maxlength=32 id='name' data-mini='true' value='-'></td></tr>
 <tr><td><b>HTTP Port:</b></td><td><input type='text' size=5 maxlength=5 id='htp' value=0 data-mini='true'></td></tr>
+<tr><td><b>IFTTT Token:</b></td><td><input type='text' size=24 maxlength=64 id='iftt' data-mini='true' value='-'></td></tr>      
+<tr><td><b>Automation:</b></td><td>If door is open for more than</td></tr>
+<tr><td colspan=2>
+<table><tr><td><input type='text' size=3 maxlength=3 id='ati' value=30 data-mini='true'></td><td>minutes:</td><td><input type='checkbox' id='ato0' data-mini='true'><label for='ato0'>Notify me</label></td><td><input type='checkbox' id='ato1' data-mini='true'><label for='ato1'>Auto-close</label></td></tr></table>
+</td></tr>
 <tr><td><b>Device Key:</b></td><td><input type='password' size=24 maxlength=32 id='dkey' data-mini='true'></td></tr>
+
 <tr><td colspan=2><p id='msg'></p></td></tr>
 </table>
 <div data-role='controlgroup' data-type='horizontal'>
@@ -46,6 +52,7 @@ const char html_sta_options[] PROGMEM = R"(<body>
 <script>
 function clear_msg() {$('#msg').text('');}  
 function show_msg(s) {$('#msg').text(s).css('color','red'); setTimeout(clear_msg, 2000);}
+function eval_cb(n)  {return $(n).is(':checked')?1:0;}
 $('#cb_key').click(function(e){
 $('#nkey').textinput($(this).is(':checked')?'enable':'disable');
 $('#ckey').textinput($(this).is(':checked')?'enable':'disable');
@@ -64,8 +71,13 @@ comm+='&riv='+$('#riv').val();
 comm+='&alm='+$('#alm').val();
 comm+='&htp='+$('#htp').val();
 comm+='&cdt='+$('#cdt').val();
+comm+='&ati='+$('#ati').val();
+var ato=0;
+for(var i=1;i>=0;i--) { ato=(ato<<1)+eval_cb('#ato'+i); }
+comm+='&ato='+ato;
 comm+='&name='+encodeURIComponent($('#name').val());
 comm+='&auth='+encodeURIComponent($('#auth').val());
+comm+='&iftt='+encodeURIComponent($('#iftt').val());
 if($('#cb_key').is(':checked')) {
 if(!$('#nkey').val()) {
 if(!confirm('New device key is empty. Are you sure?')) return;
@@ -94,8 +106,11 @@ $('#dth').val(jd.dth);
 $('#riv').val(jd.riv);
 $('#htp').val(jd.htp);
 $('#cdt').val(jd.cdt);
+$('#ati').val(jd.ati);
+for(var i=0;i<=1;i++) {if(jd.ato&(1<<i)) $('#ato'+i).attr('checked',true).checkboxradio('refresh');}
 $('#name').val(jd.name);
 $('#auth').val(jd.auth);
+$('#iftt').val(jd.iftt);
 });
 });
 </script>

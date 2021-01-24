@@ -6,7 +6,8 @@ const char html_sta_home[] PROGMEM = R"(<body>
 <table cellpadding='4'>
 <tr><td><b>Distance:</b></td><td><label id='lbl_dist'>-</label></td></tr>
 <tr><td><b>Door State:</b></td><td><label id='lbl_status'>-</label></td></tr>
-<tr><td><b>Read Count:</b></td><td><label id='lbl_beat'>-</label></td></tr>     
+<tr><td><b>Read Count:</b></td><td><label id='lbl_beat'>-</label></td></tr>
+<tr><td><b>WiFi Signal:</b></td><td><label id='lbl_rssi'>-</label></td></tr>
 <tr><td><b>Device Key:</b></td><td><input type='password' size=16 maxlength=32 name='dkey' id='dkey'></td></tr>
 <tr><td colspan=2><label id='msg'></label></td></tr>
 </table>
@@ -64,6 +65,7 @@ $('#fwv').text('v'+(jd.fwv/100>>0)+'.'+(jd.fwv/10%10>>0)+'.'+(jd.fwv%10>>0));
 $('#lbl_dist').text(''+jd.dist+' (cm)');
 $('#lbl_status').text(jd.door?'OPEN':'closed').css('color', jd.door?'red':'black');
 $('#lbl_beat').text(jd.rcnt);
+$('#lbl_rssi').text(jd.rssi+' dBm ('+(jd.rssi<-75?'weak':'ok')+')');
 $('#head_name').text(jd.name);
 });
 }
