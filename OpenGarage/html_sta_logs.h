@@ -8,14 +8,14 @@ const char html_sta_logs[] PROGMEM = R"(<body>
 <table id='tab_log' border='1' cellpadding='4' style='border-collapse:collapse;'><tr><td align='center'><b>Time Stamp</b></td><td align='center'><b>Status</b></td><td align='center'><b>D (cm)</b></td></tr></table>
 </div>
 <div data-role="controlgroup" data-type="horizontal">
-<button data-theme="b" id="btn_close">Close</button>
+<button data-theme="b" id="btn_back">Back</button>
 </div>
 </div>
 </div>
 <script>
 var curr_time = 0;
 var date = new Date();
-$("#btn_close").click(function(){close();});
+$("#btn_back").click(function(){history.back();});
 $(document).ready(function(){
 show_log();
 setInterval(show_time, 1000);

@@ -71,7 +71,10 @@ public:
   static bool read_log_next(LogStruct& data);
   static bool read_log_end();
   static void play_note(uint freq);
-  static void set_alarm() { alarm = options[OPTION_ALM].ival * 10 + 1; }
+  static void set_alarm(byte ov=0) { // ov = override value
+    if(ov) alarm = ov*10+1;
+    else alarm = options[OPTION_ALM].ival * 10 + 1;
+  }
   static void reset_alarm() { alarm = 0; }
 private:
   static ulong echo_time;

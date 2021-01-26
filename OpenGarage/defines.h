@@ -74,6 +74,7 @@
 #define BLYNK_PIN_LCD   V2
 #define BLYNK_PIN_DIST  V3
 #define BLYNK_PIN_RCNT  V4
+#define BLYNK_PIN_IP    V5
 
 #define MAX_LOG_RECORDS    100
 #define ALARM_FREQ         1000

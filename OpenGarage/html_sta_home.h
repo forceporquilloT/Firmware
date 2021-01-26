@@ -21,7 +21,7 @@ const char html_sta_home[] PROGMEM = R"(<body>
 </div>
 </div>
 <div data-role='footer' data-theme='c'>
-<p>&nbsp; OpenGarage Firmware <label id='fwv'>-</label>&nbsp;<a href="update" target='_blank' data-role='button' data-inline=true data-mini=true>Update</a></p>
+<p>&nbsp; OpenGarage Firmware <label id='fwv'>-</label>&nbsp;<a href='update' target='_top' data-role='button' data-inline=true data-mini=true>Update</a></p>
 </div>
 </div>
 <script>
@@ -31,8 +31,8 @@ function show_msg(s,t,c) {
 $('#msg').text(s).css('color',c);
 if(t>0) setTimeout(clear_msg, t);
 }
-$('#btn_opts').click(function(e){window.open('vo');});
-$('#btn_log').click(function(e){window.open('vl');});
+$('#btn_opts').click(function(e){window.open('vo', '_top');});
+$('#btn_log').click(function(e){window.open('vl', '_top');});
 $('#btn_rbt').click(function(e){
 if(confirm('Reboot the device now?')){
 var comm = 'cc?reboot=1&dkey='+($('#dkey').val());

@@ -33,7 +33,9 @@
       </select></td></tr>
       <tr><td><b>Device Name:</b></td><td><input type='text' size=20 maxlength=32 id='name' data-mini='true' value='-'></td></tr>
       <tr><td><b>HTTP Port:</b></td><td><input type='text' size=5 maxlength=5 id='htp' value=0 data-mini='true'></td></tr>
-      <tr><td><b>IFTTT Token:</b></td><td><input type='text' size=24 maxlength=64 id='iftt' data-mini='true' value='-'></td></tr>      
+      <tr><td><b>IFTTT Key:<a href='#ifttInfo' data-rel='popup' data-role='button' data-inline='true' data-transition='pop' data-icon='info' data-theme='c' data-iconpos='notext'>Learn more</a><div data-role='popup' id='ifttInfo' class='ui-content' data-theme='b' style='max-width:320px;'>
+  <p><a href='https://ifttt.com' target='_blank'>IFTTT</a> provides additional notification options (e.g. SMS, email) besides Blynk.</p>
+</div></b></td><td><input type='text' size=24 maxlength=64 id='iftt' data-mini='true' value='-'></td></tr>      
       <tr><td><b>Automation:</b></td><td>If door is open for more than</td></tr>
       <tr><td colspan=2>
       <table><tr><td><input type='text' size=3 maxlength=3 id='ati' value=30 data-mini='true'></td><td>minutes:</td><td><input type='checkbox' id='ato0' data-mini='true'><label for='ato0'>Notify me</label></td><td><input type='checkbox' id='ato1' data-mini='true'><label for='ato1'>Auto-close</label></td></tr></table>
@@ -43,7 +45,7 @@
       <tr><td colspan=2><p id='msg'></p></td></tr>
       </table>
       <div data-role='controlgroup' data-type='horizontal'>
-      <a href='#' data-role='button' data-inline='true' data-theme='a' id='btn_cancel'>Cancel</a>
+      <a href='#' data-role='button' data-inline='true' data-theme='a' id='btn_back'>Back</a>
       <a href='#' data-role='button' data-inline='true' data-theme='b' id='btn_submit'>Submit</a>      
       </div>
       <table>
@@ -53,19 +55,20 @@
       </table>
     </div>
     <div data-role='footer' data-theme='c'>
-      <p>&nbsp; OpenGarage Firmware <label id='fwv'>-</label>&nbsp;<a href="update" target='_blank' data-role='button' data-inline=true data-mini=true>Update</a></p>
+      <p>&nbsp; OpenGarage Firmware <label id='fwv'>-</label>&nbsp;<a href='update' target='_top' data-role='button' data-inline=true data-mini=true>Update</a></p>
     </div> 
   </div>
   <script>
     function clear_msg() {$('#msg').text('');}  
     function show_msg(s) {$('#msg').text(s).css('color','red'); setTimeout(clear_msg, 2000);}
+    function goback() {history.back();}
     function eval_cb(n)  {return $(n).is(':checked')?1:0;}
     $('#cb_key').click(function(e){
       $('#nkey').textinput($(this).is(':checked')?'enable':'disable');
       $('#ckey').textinput($(this).is(':checked')?'enable':'disable');
     });
-    $('#btn_cancel').click(function(e){
-      e.preventDefault(); close();
+    $('#btn_back').click(function(e){
+      e.preventDefault(); goback();
     });
     $('#btn_submit').click(function(e){
       e.preventDefault();
@@ -98,7 +101,7 @@
             else show_msg('Error code: '+jd.result+', item: '+jd.item);
           } else {
             $('#msg').html('<font color=green>Options are successfully saved. Note that<br>changes to some options may require a reboot.</font>');
-            setTimeout(close, 4000);
+            setTimeout(goback, 4000);
           }
         });
       }

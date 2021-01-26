@@ -577,7 +577,8 @@ void perform_automation(byte event) {
         }
         if(ato & OG_AUTO_CLOSE) {
           // auto close door
-          if(!og.options[OPTION_ALM].ival) { og.click_relay(); }
+          // alarm is mandatory in auto-close
+          if(!og.options[OPTION_ALM].ival) { og.set_alarm(OG_ALM_5); }
           else { og.set_alarm(); }
         }
         justopen_timestamp = 0;
@@ -617,6 +618,7 @@ void check_status() {
       Blynk.virtualWrite(BLYNK_PIN_RCNT, read_cnt);
       Blynk.virtualWrite(BLYNK_PIN_DIST, distance);
       (door_status) ? blynk_led.on() : blynk_led.off();
+      Blynk.virtualWrite(BLYNK_PIN_IP, get_ip());
       blynk_lcd.print(0, 0, get_ip());
       String str = ":";
       str += og.options[OPTION_HTP].ival;

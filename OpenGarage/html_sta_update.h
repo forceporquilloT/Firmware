@@ -8,7 +8,7 @@ const char html_sta_update[] PROGMEM = R"(<body>
 <tr><td><b>Device key: </b><input type='password' name='dkey' size=16 maxlength=16 id='dkey'></td></tr>
 <tr><td><label id='msg'></label></td></tr>
 </table>
-<a href='#' data-role='button' data-inline='true' data-theme='a' id='btn_cancel'>Cancel</a>
+<a href='#' data-role='button' data-inline='true' data-theme='a' id='btn_back'>Back</a>
 <a href='#' data-role='button' data-inline='true' data-theme='b' id='btn_submit'>Submit</a>
 </form>
 </div>
@@ -19,9 +19,10 @@ function clear_msg() {id('msg').innerHTML='';}
 function show_msg(s,t,c) {
 id('msg').innerHTML=s.fontcolor(c);
 if(t>0) setTimeout(clear_msg, t);
-}  
-$('#btn_cancel').click(function(e){
-e.preventDefault(); close();
+}
+function goback() {history.back();}
+$('#btn_back').click(function(e){
+e.preventDefault(); goback();
 });
 $('#btn_submit').click(function(e){
 var files= id('file').files;
@@ -41,7 +42,7 @@ if(xhr.readyState==4 && xhr.status==200) {
 var jd=JSON.parse(xhr.responseText);
 if(jd.result==1) {
 show_msg('Update is successful. Rebooting. Please wait...',0,'green');
-setTimeout(close, 10000);
+setTimeout(goback, 10000);
 } else if (jd.result==2) {
 show_msg('Check device key and try again.', 0, 'red');
 } else {
