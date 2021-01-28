@@ -740,8 +740,6 @@ void do_loop() {
       
       DEBUG_PRINTLN(WiFi.localIP());
     } else {
-      delay(500);
-      DEBUG_PRINT(".");
       if(millis() > connecting_timeout) {
         og.state = OG_STATE_INITIAL;
         DEBUG_PRINTLN(F("timeout"));
@@ -750,10 +748,18 @@ void do_loop() {
     break;
   
   case OG_STATE_CONNECTED:
-    if(curr_local_access_en)
+    if(curr_mode == OG_MOD_AP) {
       server->handleClient();
-    if(curr_cloud_access_en)
-      Blynk.run();
+    } else {
+      if(WiFi.status() == WL_CONNECTED) {
+        if(curr_local_access_en)
+          server->handleClient();
+        if(curr_cloud_access_en)
+          Blynk.run();
+      } else {
+        og.state = OG_STATE_INITIAL;
+      }
+    }
     break;
     
   case OG_STATE_RESTART:
@@ -770,7 +776,7 @@ void do_loop() {
     DEBUG_PRINTLN(F("reset"));
     og.options_reset();
     og.log_reset();
-    restart_timeout = millis() + 1000;
+    restart_timeout = millis();
     og.state = OG_STATE_RESTART;
     break;
   
